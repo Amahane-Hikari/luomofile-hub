@@ -145,10 +145,12 @@ docs/STORAGE.md          存储后端说明
 ```bash
 python -m venv .venv && . .venv/bin/activate
 pip install -r requirements.txt -c requirements.lock
-for t in scripts/test_*.py scripts/smoke_test*.py; do python "$t" || break; done
+for t in scripts/test_*.py scripts/smoke_test_subscription_*.py; do python "$t" || break; done
 ```
 
-测试脚本使用临时数据库和本地存储，不需要网络与真实凭据。CI（`.github/workflows/ci.yml`）在 Python 3.12 上执行 compileall、应用导入和全部测试脚本。
+以上测试自带临时数据库，不需要网络与真实凭据。另有 5 个 HTTP 冒烟测试（`smoke_test.py`、`smoke_test_public_pages.py`、`smoke_test_files_page.py`、`smoke_test_link_policy.py`、`smoke_test_upload_ui.py`）需要先用隔离的数据库启动一个服务，再通过 `SMOKE_BASE_URL` 与相同的 `DATABASE_PATH` 运行；具体环境变量见 CI。
+
+CI（`.github/workflows/ci.yml`）在 Python 3.12 上执行 compileall、应用导入、全部自带测试，并启动隔离服务跑完这 5 个冒烟测试。
 
 ## License
 
